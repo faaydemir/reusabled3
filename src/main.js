@@ -31,13 +31,9 @@ let data = {
 
 let label = new Label("#label", Object.keys(data), {});
 let line = new Line("#linechart", data, config);
-
 let XAxis = new xAxis("#xaxis", data, config);
-
 let YAxis = new yAxis("#yaxis", data, config);
-
 let bar = new Bar("#bar", data, config);
-
 let circle = new Circle("#circle", data, config);
 
 AddData(line, 100, 1, 10000);

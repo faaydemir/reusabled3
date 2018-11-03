@@ -44,7 +44,7 @@ class Label extends d3Base {
             .attr("rx", 5)
             .attr("ry", 5)
             .attr("x", (d, i) => this.scale(i))
-            .attr("y", this.config.labelHeight)
+            .attr("y", 0)
             .attr("fill", d => this.config.colorMap(d))
             .attr("opacity", this.opacity)
             .attr("width", this.config.labelWidth)
@@ -52,10 +52,10 @@ class Label extends d3Base {
 
         var texts = chartLabels.append("text")
             .attr("x", (d, i) => this.scale(i) + this.config.labelWidth + 2)
-            .attr("y", this.config.labelHeight)
-            .attr("text-anchor", "middle")
-            .attr("fill", d => this.config.colorMap(d))
-            .text((d, i) => this.config.format(d))
+            .attr("y", this.config.labelHeight * 0.8)
+            .style("fill", d => this.config.colorMap(d))
+            .style("font-size", this.config.labelHeight * 0.6)
+            .text((d, i) => this.config.format(d));
     }
     _updateDraw() {
 
