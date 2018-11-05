@@ -17,14 +17,27 @@ class Circle extends d3Base {
             maxY: null,
             x: d => d.x,
             y: d => d.y,
+            z: null,
             mouseOut: null,
             mouseOver: null,
-            r: 5,
+            r: 3,
         };
 
         this._init(container, data, config);
         this._initScales();
         this._draw();
+    }
+    _initScales() {
+        super._initScales();
+
+        if (this.config.z) {
+            this.domainZ = this.config.domainZ || d3.extent(this.__flattenData, this.config.z);
+            this.scaleZ = this.config.scaleZ || d3.scaleLinear()
+                .range([this.config.r / 5, this.config.r])
+                .domain(this.domainZ);
+        } else {
+            this.scaleZ = d => this.config.r;
+        }
     }
     _draw() {
         this._circleContainer = this.container
@@ -48,7 +61,7 @@ class Circle extends d3Base {
                 .attr("class", "circle")
                 .attr("cx", d => this.scaleX(this.config.x(d)))
                 .attr("cy", d => this.scaleY(this.config.y(d)))
-                .attr("r", this.config.r)
+                .attr("r", d => this.scaleZ(this.config.y(d)));
 
         }
 
@@ -70,13 +83,13 @@ class Circle extends d3Base {
                 .attr("class", "circle")
                 .attr("cx", d => this.scaleX(this.config.x(d)))
                 .attr("cy", d => this.scaleY(this.config.y(d)))
-                .attr("r", this.config.r);
+                .attr("r", d => this.scaleZ(this.config.y(d)));
 
             // update
             selection
                 .attr("cx", d => this.scaleX(this.config.x(d)))
                 .attr("cy", d => this.scaleY(this.config.y(d)))
-                .attr("r", this.config.r);
+                .attr("r", d => this.scaleZ(this.config.y(d)));
 
             selection.exit().remove();
         }

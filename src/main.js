@@ -4,7 +4,9 @@ function CreateData(count, start) {
     for (let index = 0; index < count; index++) {
         data.push({
             x: index + start,
-            y: Math.random() * 100
+            y: Math.random() * 10,
+            z: Math.random() * 100,
+            q: Math.random() * 1000
         });
     }
     return data;
@@ -21,13 +23,12 @@ async function AddData(chart, sleepTime, dataCount, addCount) {
 }
 
 let config = {
-    maxDataCount: 73
+    maxDataCount: 101
 }
 let lineChartConfig = {
-    maxDataCount: 100,
+    maxDataCount: 101,
 }
 let chartModuleConfig = {
-    component: ["bar", "circle", "line", "xAxis", "yAxis", "label"],
     components: {
         bar: {
             config: {
@@ -44,17 +45,18 @@ let data = {
     set3: []
 }
 
-let label = new Label("#label", Object.keys(data), {});
+let label = new Label("#label", data, {});
 let line = new Line("#line", data, config);
 let XAxis = new xAxis("#xaxis", data, config);
 let YAxis = new yAxis("#yaxis", data, config);
 let bar = new Bar("#bar", data, config);
 let circle = new Circle("#circle", data, config);
 
-let lineChart = new LineChart("#linechart", data, lineChartConfig);
+let lineChart = new Chart("#linechart", data, lineChartConfig);
 
 AddData(line, 100, 1, 10000);
 AddData(bar, 100, 1, 10000);
 AddData(YAxis, 100, 1, 10000);
 AddData(XAxis, 100, 1, 10000);
 AddData(circle, 100, 1, 10000);
+AddData(lineChart, 100, 1, 10000);

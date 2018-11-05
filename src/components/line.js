@@ -8,8 +8,6 @@ class Line extends d3Base {
 
         this._defaultConfig = {
             colorMap: d3.scaleOrdinal(d3.schemeCategory10),
-
-
             yAxisWidth: 40,
             xAxisHeight: 40,
             strokeWidth: 1,

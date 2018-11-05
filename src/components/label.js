@@ -6,13 +6,15 @@ class Label extends d3Base {
             colorMap: d3.scaleOrdinal(d3.schemeCategory10),
             flow: "X",
             width: "100%",
-            opacity: 1,
+            opacity: 0.7,
             height: "100%",
             format: d => d,
-            labelWidth: 32,
-            labelHeight: 20,
+            labelWidth: 20,
+            labelHeight: 15,
         }
+        this.AppendData = null;
         this._init(container, data, config);
+        this.data = Object.keys(data);
         this._initScales();
         this._draw()
     }

@@ -23,10 +23,10 @@ class xAxis extends d3Base {
             .scale(this.scaleX)
             .ticks(this.config.tickCount)
             .tickFormat(this.config.format)
-            .tickSizeOuter(40)
-            .tickPadding(30)
-            .tickSizeInner(20)
-            .tickSize(10)
+            .tickSizeOuter(5)
+            .tickPadding(5)
+            .tickSizeInner(5)
+            .tickSize(5)
 
         this.xAxisContainer = this.container
             .append("g")

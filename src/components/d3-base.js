@@ -12,6 +12,11 @@ class d3Base {
 
 
     }
+    AppendDataAsync(data) {
+        return new Promise((resolve, reject) => {
+            this.AppendData(data);
+        });
+    }
     AppendData(data) {
         this._addData(data);
         this._initScales();
@@ -80,10 +85,10 @@ class d3Base {
 
 
         let dataArrays = Object.values(this.data);
-        let flattenData = [].concat.apply([], dataArrays);
+        this.__flattenData = [].concat.apply([], dataArrays);
 
-        this.domainX = this.config.domainX || d3.extent(flattenData, this.config.x);
-        this.domainY = this.config.domainY || d3.extent(flattenData, this.config.y);
+        this.domainX = this.config.domainX || d3.extent(this.__flattenData, this.config.x);
+        this.domainY = this.config.domainY || d3.extent(this.__flattenData, this.config.y);
 
         this.scaleX = this.config.scaleX || d3.scaleLinear()
             .range([0, this.config.width])
@@ -91,6 +96,6 @@ class d3Base {
 
         this.scaleY = this.config.scaleY || d3.scaleLinear()
             .range([this.config.height, 0])
-            .domain(this.domainY.reverse());
+            .domain(this.domainY);
     }
 }

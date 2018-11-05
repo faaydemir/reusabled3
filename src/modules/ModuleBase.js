@@ -1,104 +1,128 @@
 class ModuleBase {
-    constructor(container, config, data) {
+    constructor(container, data, config) {
         this.containers = {};
         this.baseConfig = {
             components: ["bar", "circle", "line", "xAxis", "yAxis", "label"],
-            component: {
-                label: {
-                    type: Label,
-                    layout: {
-                        width: "100%",
-                        height: 40,
-                        position: "absolute",
-                        r: 0,
-                        c: 1,
-                    }
-                },
-                line: {
-                    type: Line,
-                    layout: {
-                        width: "100%",
-                        height: "100%",
-                        position: "absolute",
-                        r: 1,
-                        c: 1,
-                    }
-                },
-                bar: {
-                    type: Line,
-                    layout: {
-                        width: "100%",
-                        height: "100%",
-                        position: "absolute",
-                        r: 1,
-                        c: 1,
-                    }
-                },
-                circle: {
-                    type: Line,
-                    layout: {
-                        width: "100%",
-                        height: "100%",
-                        position: "absolute",
-                        r: 1,
-                        c: 1,
-                    }
-                },
-                xAxis: {
-                    type: xAxis,
-                    layout: {
-                        width: "100%",
-                        height: 40,
-                        position: "absolute",
-                        r: 2,
-                        c: 1,
-                    }
-                },
-                yAxis: {
-                    type: yAxis,
-                    layout: {
-                        width: 40,
-                        height: "100%",
-                        r: 1,
-                        c: 0,
-                    }
-                },
-            },
+            width: "100%",
+            height: "100%",
 
         };
+        this.componentConfig = {
+            label: {
+                type: Label,
+                config: {
+                    width: "100%",
+                    height: 20,
+                    row: 0,
+                    column: 1,
+                }
+            },
+            line: {
+                type: Line,
+                config: {
+                    width: "100%",
+                    height: "100%",
+                    row: 1,
+                    column: 1,
+                }
+            },
+            bar: {
+                type: Bar,
+                config: {
+                    width: "100%",
+                    height: "100%",
+                    row: 1,
+                    column: 1,
+                }
+            },
+            circle: {
+                type: Circle,
+                config: {
+                    width: "100%",
+                    height: "100%",
+                    row: 1,
+                    column: 1,
+                }
+            },
+            xAxis: {
+                type: xAxis,
+                config: {
+                    width: "100%",
+                    height: 20,
+                    row: 2,
+                    column: 1,
+                }
+            },
+            yAxis: {
+                type: yAxis,
+                config: {
+                    width: 30,
+                    height: "100%",
+                    row: 1,
+                    column: 0,
+                }
+            },
+        }
     }
     _init(container, data, config) {
         this.config = MergeTo(this.baseConfig, MergeTo(this._defaultConfig, config));
+        this.data = clone(data);
         this._initContainer(container);
         this._initLayout();
-        this._initScales();
-        this.data = clone(data);
+        this._initComponents();
+
     }
 
     _initLayout() {
         let colorMap = d3.scaleOrdinal(d3.schemeCategory10);
         this.grid = new AutoGrid(this.container);
         let calculatedLayout = {};
-        for (let component in this.config.component) {
-            if (!(this.config.component[component])) continue;
-            let cLayout = this.config.component[component].layout
-            this.grid.AddItem(cLayout.c, cLayout.r, cLayout.width, cLayout.height);
-        }
+        this.config.components.forEach(
+            component => {
+                if ((this.componentConfig[component])) {
+                    let cLayout = this.componentConfig[component].config
+                    this.grid.AddItem(cLayout.column, cLayout.row, cLayout.width, cLayout.height);
+                }
+            });
 
         this.grid.Update();
 
-        for (let component in this.config.component) {
-            if (!this.config.component[component]) continue;
-            let cLayout = this.config.component[component].layout;
+        this.config.components.forEach(
+            component => {
+                if (this.componentConfig[component]) {
+                    let cLayout = this.componentConfig[component].config;
 
-            let ly = this.grid.GetLayout(cLayout.c, cLayout.r, cLayout.width, cLayout.height);
-            this.containers[component] = this.container.append("g").attr("width", ly.width).attr("height", ly.height).attr("transform", ly.translate).append("rect").attr("width", ly.width).attr("height", ly.height).style("fill", colorMap(component));
-        }
+                    let ly = this.grid.GetLayout(cLayout.column, cLayout.row, cLayout.width, cLayout.height);
+                    this.containers[component] = this.container.append("g").attr("width", ly.width).attr("height", ly.height).attr("transform", ly.translate);
+
+                    // for debug 
+                    // delete later
+                    this.containers[component].append("rect").attr("width", ly.width).attr("height", ly.height).attr("opacity", 0.1).style("fill", colorMap(component))
+                }
+            });
 
 
     }
-    _initScales() {
+    _initComponents() {
+        this.components = {}
+        this.config.components.forEach(
+            component => {
+                if ((this.componentConfig[component])) {
+                    let container = this.containers[component];
+                    let config = MergeTo(this.componentConfig[component].config, this.config);
+                    let data = this.data;
+                    this.components[component] = new this.componentConfig[component].type(container, data, config);
+                }
+            });
+    }
 
+    AppendData(data) {
+
+        this.config.components.forEach(
+            component => {
+                if (this.components[component].AppendData)
+                    this.components[component].AppendData(data);
+            });
     }
     _initContainer(container) {
         if (typeof container === "string") { // if #divId , or  .divclass 
