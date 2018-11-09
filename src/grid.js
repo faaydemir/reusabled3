@@ -14,6 +14,7 @@ function AutoGrid(container) {
     this.height = this.container.node().getBoundingClientRect().height;
 
     function AddItem(c, r, itemWidth, itemHeight) {
+        
         if (r + 1 > rowCount)
             rowCount = r + 1;
         if (c + 1 > columnCount)

@@ -9,8 +9,8 @@ class d3Base {
         this.config;
         this._draw;
         this._updateDraw;
-
-
+        this.eventBus;
+        this.eventListeners = {};
     }
     AppendDataAsync(data) {
         return new Promise((resolve, reject) => {
@@ -48,11 +48,24 @@ class d3Base {
 
     _init(container, data, config) {
         this.config = MergeTo(this._defaultConfig, config);
-        this._initContainer(container);
-        let layoutParams = calculatedLayout(this.container, this.config.width, this.config.height);
-        this.config.width = layoutParams.width;
-        this.config.height = layoutParams.height;
-        this.data = clone(data);
+        if (container) {
+            this._initContainer(container);
+            let layoutParams = calculatedLayout(this.container, this.config.width, this.config.height);
+            this.config.width = layoutParams.width;
+            this.config.height = layoutParams.height;
+        }
+        if (data) {
+            this.data = clone(data);
+        }
+
+    }
+    eventBus(eventBus) {
+        if (eventBus) {
+            this._eventBus = eventBus;
+            for (let listener in this.eventListeners) {
+                this._eventBus.subscribe(listener, this.eventListeners[listener]);
+            }
+        }
     }
     _initContainer(container) {
         if (typeof container === "string") { // if #divId , or  .divclass 
@@ -71,14 +84,23 @@ class d3Base {
     }
 
     _addData(data) {
+        if (data === null || this.data === null)
+            return
         for (var key in data) {
+
             if (!data.hasOwnProperty(key)) continue;
             if (!this.data.hasOwnProperty(key)) continue;
+
             this.data[key] = this.data[key].concat(data[key]);
             if (this.config.maxDataCount) {
                 let start = this.data[key].length - this.config.maxDataCount;
                 this.data[key] = this.data[key].slice(start);
             }
+        }
+    }
+    _raiseEvent(name, source, args) {
+        if (this._eventBus) {
+            this._eventBus.notify(name, source, args);
         }
     }
     _initScales() {

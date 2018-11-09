@@ -12,7 +12,8 @@ class Label extends d3Base {
             labelWidth: 20,
             labelHeight: 15,
         }
-        this.AppendData = null;
+        this.AppendData =null;
+        this.UpdateData=null;
         this._init(container, data, config);
         this.data = Object.keys(data);
         this._initScales();

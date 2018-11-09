@@ -2,12 +2,15 @@ class ModuleBase {
     constructor(container, data, config) {
         this.containers = {};
         this.baseConfig = {
-            components: ["bar", "circle", "line", "xAxis", "yAxis", "label"],
+            components: ["bar", "circle", "line", "xAxis", "yAxis", "label", "tooltip"],
             width: "100%",
             height: "100%",
 
         };
         this.componentConfig = {
+            tooltip: {
+                type: Tooltip,
+            },
             label: {
                 type: Label,
                 config: {
@@ -67,6 +70,7 @@ class ModuleBase {
     _init(container, data, config) {
         this.config = MergeTo(this.baseConfig, MergeTo(this._defaultConfig, config));
         this.data = clone(data);
+        this.eventBus = new EventBus();
         this._initContainer(container);
         this._initLayout();
         this._initComponents();
@@ -79,7 +83,7 @@ class ModuleBase {
         let calculatedLayout = {};
         this.config.components.forEach(
             component => {
-                if ((this.componentConfig[component])) {
+                if ((this.componentConfig[component]) &&(this.componentConfig[component].config) ) {
                     let cLayout = this.componentConfig[component].config
                     this.grid.AddItem(cLayout.column, cLayout.row, cLayout.width, cLayout.height);
                 }
@@ -89,7 +93,7 @@ class ModuleBase {
 
         this.config.components.forEach(
             component => {
-                if (this.componentConfig[component]) {
+                if ((this.componentConfig[component]) &&(this.componentConfig[component].config) )  {
                     let cLayout = this.componentConfig[component].config;
 
                     let ly = this.grid.GetLayout(cLayout.column, cLayout.row, cLayout.width, cLayout.height);
@@ -112,6 +116,7 @@ class ModuleBase {
                     let config = MergeTo(this.componentConfig[component].config, this.config);
                     let data = this.data;
                     this.components[component] = new this.componentConfig[component].type(container, data, config);
+                    this.components[component].eventBus(this.eventBus)
                 }
             });
     }

@@ -70,12 +70,26 @@ class Line extends d3Base {
 
     OnMouseOver(self) {
         return function(d, i) {
+            let bisector = d3.bisector(self.config.x).left;
+            let x0 = self.scaleX.invert(d3.mouse(this)[0]);
+            let selectedIndex = bisector(d, x0, 1);
+            let args = {}
 
+            args.d = d[selectedIndex];
+            args.i = i
+            args.x = event.pageX;
+            args.y = event.pageY;
+            self._raiseEvent(EventTypes.onMouseOver, self, args);
         }
     }
     OnMouseOut(self) {
         return function(d, i) {
-
+            let args = {}
+            args.d = d;
+            args.i = i
+            args.x = event.pageX;
+            args.y = event.pageY;
+            self._raiseEvent(EventTypes.onMouseOut, self, args);
         }
     }
 

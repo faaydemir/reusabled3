@@ -4,7 +4,7 @@
 
 <head>
 
-    <title>red3</title>
+    <title>re-d3</title>
 
 
     <!-- Fonts -->
@@ -33,6 +33,12 @@
 
     <div class="container">
         <h2 class="race-title" id="raceTitle"></h2>
+        <div class="item">
+            <h2 class="chart-header">Chart</h2>
+            <div id="linechart" class="chart">
+
+            </div>
+        </div>
         <div class="item">
             <h2 class="chart-header">label</h2>
             <div id="label" class="chart">
@@ -69,12 +75,7 @@
 
             </div>
         </div>
-        <div class="item">
-            <h2 class="chart-header">Chart</h2>
-            <div id="linechart" class="chart">
 
-            </div>
-        </div>
     </div>
 
 
@@ -82,6 +83,7 @@
     <script src="src/utils.js"></script>
     <script src="src/d3-utils.js"></script>
     <script src="src/grid.js"></script>
+    <script src="src/event-bus.js"></script>
     <script src="src/components/d3-base.js"></script>
     <script src="src/components/label.js"></script>
     <script src="src/components/bar.js"></script>
@@ -90,7 +92,6 @@
     <script src="src/components/yAxis.js"></script>
     <script src="src/components/line.js"></script>
     <script src="src/components/tooltip.js"></script>
-
     <script src="src/modules/ModuleBase.js"></script>
     <script src="src/modules/Chart.js"></script>
 
