@@ -23,7 +23,7 @@ class d3Base {
         this._updateDraw();
     }
 
-    UpdateData() {
+    UpdateData(data) {
         this._setData(data);
         this._initScales();
         this._updateDraw();

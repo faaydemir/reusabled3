@@ -31,23 +31,27 @@ class Tooltip extends d3Base {
             .duration(1000)
             .style("opacity", 0)
             .transition()
-                    .style("left", "0px")
-                    .style("top", "0px");
-            
+            .style("left", "0px")
+            .style("top", "0px");
+
     }
 
     Show(d, x, y) {
+        let rect = this.TooltipDiv.node().getBoundingClientRect();
+        let bodyRect = this.TooltipDiv.node().getBoundingClientRect();
 
-
-        this.TooltipDiv.transition()
-            .duration(50)
-            .style("opacity", 0.9);
-
-
+        if ((x > rect.width / 2) && (y > rect.height)) {
+            x = x - rect.width / 2;
+            y = y - rect.height;
+        }
+        if ((x + rect.width / 2) > bodyRect.width) {
+            x = x - rect.width / 2;
+        }
         this.TooltipDiv
-            .html(this.config.html(d))
             .style("left", (x + "px"))
-            .style("top", (y + "px"));
+            .style("top", (y + "px"))
+            .html(this.config.html(d))
+            .style("opacity", 1);
     }
 
 }

@@ -10,7 +10,7 @@ class Bar extends d3Base {
             yAxisWidth: 40,
             xAxisHeight: 40,
             strokeWidth: 1,
-            opacity: 1,
+            opacity: 0.3,
             width: "100%",
             height: "100%",
             maxDataCount: null,
@@ -24,8 +24,16 @@ class Bar extends d3Base {
             mouseOver: null,
             curve: d3.curveStep,
             barWidth: 5,
-        };
+            onFocus: {
+                opacity: 1,
+                colorMap: d3.scaleOrdinal(d3.schemeCategory10),
+            }
 
+        };
+        this.eventListeners = {
+            onMouseOverLabel: (n, s, args) => this.__focus(args.d),
+            onMouseOutLabel: (n, s, args) => this.__unfocus(args.d),
+        }
         this._init(container, data, config);
         this._initScales();
         this._draw();
@@ -64,6 +72,20 @@ class Bar extends d3Base {
             barIndex++;
         }
 
+    }
+
+    __focus(key) {
+        this.bars[key]
+            .attr("opacity", this.config.onFocus.opacity)
+            .attr("fill", this.config.onFocus.colorMap(key))
+            .moveToFront();
+    }
+
+    __unfocus(key) {
+        this.bars[key]
+            .attr("opacity", this.config.opacity)
+            .attr("fill", this.config.colorMap(key))
+            .moveToFront();
     }
 
     _updateDraw() {
@@ -111,7 +133,7 @@ class Bar extends d3Base {
             if (this.data[key].length > maxLength)
                 maxLength = this.data[key].length;
         }
-        let barWidth = this.config.width / (maxLength  * (barCount+1));
+        let barWidth = this.config.width / (maxLength * (barCount + 1));
         if (this.config.barWidth < barWidth)
             barWidth = this.config.barWidth
         return barWidth;

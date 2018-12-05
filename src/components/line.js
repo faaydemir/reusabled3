@@ -27,13 +27,34 @@ class Line extends d3Base {
             hoverOpacity: 1,
             hoverStrokeWidth: 2,
             curve: "curveBasis",
+            onFocus: {
+                opacity: 1,
+                strokeWidth: 2,
+                colorMap: d3.scaleOrdinal(d3.schemeCategory10),
+            }
         };
+
+        this.eventListeners = {
+            onMouseOverLabel: (n, s, args) => this.__focus(args.d),
+            onMouseOutLabel: (n, s, args) => this.__unfocus(args.d),
+        }
 
         this._init(container, data, config);
         this._initScales();
         this._draw();
     }
-
+    __focus(key) {
+        this.lines[key]
+            .attr("opacity", this.config.onFocus.opacity)
+            .attr("stroke-width", this.config.onFocus.strokeWidth)
+            .moveToFront();
+    }
+    __unfocus(key) {
+        this.lines[key]
+            .attr("opacity", this.config.opacity)
+            .attr("stroke-width", this.config.onFocus.strokewidth)
+            .moveToFront();
+    }
     _draw() {
         this.d = d3.line()
             .x(d => {
@@ -67,7 +88,6 @@ class Line extends d3Base {
 
     }
 
-
     OnMouseOver(self) {
         return function(d, i) {
             let bisector = d3.bisector(self.config.x).left;
@@ -76,7 +96,7 @@ class Line extends d3Base {
             let args = {}
 
             args.d = d[selectedIndex];
-            args.i = i
+            args.i = i;
             args.x = event.pageX;
             args.y = event.pageY;
             self._raiseEvent(EventTypes.onMouseOver, self, args);
@@ -85,7 +105,7 @@ class Line extends d3Base {
     OnMouseOut(self) {
         return function(d, i) {
             let args = {}
-            args.d = d;
+                // args.d = d;
             args.i = i
             args.x = event.pageX;
             args.y = event.pageY;
@@ -93,24 +113,6 @@ class Line extends d3Base {
         }
     }
 
-    SetHover(key, rate) {
-
-        if (!IsNull(this.lines[key])) {
-
-            let opacity = this.config.opacity;
-            let strokewidth = this.config.strokeWidth;
-
-            if (!(rate == null) && !(rate == 0)) {
-                opacity = (this.config.hoverOpacity - this.config.opacity) * rate + this.config.opacity;
-                strokewidth = (this.config.hoverStrokeWidth - this.config.strokeWidth) * rate + this.config.strokeWidth;
-            }
-
-            this.lines[key]
-                .attr("opacity", opacity)
-                .attr("stroke-width", strokewidth)
-                .moveToFront();
-        }
-    }
 
     _updateDraw() {
         for (var key in this.data) {

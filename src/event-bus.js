@@ -4,19 +4,12 @@ const EventTypes = {
     click: "click",
     verticalzoom: "verticalzoom",
     horizontalzoom: "horizontalzoom",
+    onMouseOutLabel: "onMouseOutLabel",
+    onMouseOverLabel: "onMouseOverLabel",
+    onMouseClickLabel: "onMouseClickLabel",
 }
 
-var Event = function(_name, _value, _source) {
-    if (arguments.length == 3) {
-        this.name = _name;
-        this.value = _value;
-        this.source = _source;
-    } else {
-        this.name = "";
-        this.value = "";
-        this.source = "";
-    }
-}
+
 class EventBus {
     constructor() {
         this.observers = {};

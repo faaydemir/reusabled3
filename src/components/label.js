@@ -9,19 +9,26 @@ class Label extends d3Base {
             opacity: 0.7,
             height: "100%",
             format: d => d,
-            labelWidth: 20,
+            labelWidth: 15,
             labelHeight: 15,
+            textWidth: 50,
+            align: "left"
         }
-        this.AppendData =null;
-        this.UpdateData=null;
+        this.AppendData = null;
+        this.UpdateData = null;
         this._init(container, data, config);
         this.data = Object.keys(data);
         this._initScales();
-        this._draw()
+        this._draw();
+    }
+
+    __calculateTotalWidth() {
+        return this.data.length * (this.config.labelHeight + 2 + this.config.textWidth);
     }
     _initScales() {
+        let totalWidth = this.__calculateTotalWidth();
         this.scale = this.config.scale || d3.scaleLinear()
-            .range([0, this.config.width])
+            .range([this.config.width - totalWidth, this.config.width])
             .domain([0, this.data.length]);
     }
     _draw() {
@@ -33,19 +40,19 @@ class Label extends d3Base {
             .data(this.data)
             .enter().append("g")
             .attr("class", "label")
-            .on("mouseover", function(d) {
-                mouseOver(d)
-            })
-            .on("mouseout", function(d) {
-                mouseOut(d)
-            })
-            .on("click", function(d, i) {
-                mouseClicked(d)
-            });
+            .on("mouseover",
+                this.OnMouseOver(this)
+            )
+            .on("mouseout",
+                this.OnMouseOut(this)
+            )
+            .on("click",
+                this.OnMouseClick(this)
+            );
 
         var rects = chartLabels.append("rect")
-            .attr("rx", 5)
-            .attr("ry", 5)
+            .attr("rx", 2)
+            .attr("ry", 2)
             .attr("x", (d, i) => this.scale(i))
             .attr("y", 0)
             .attr("fill", d => this.config.colorMap(d))
@@ -63,5 +70,26 @@ class Label extends d3Base {
     _updateDraw() {
 
     }
+    OnMouseClick(self) {
+        return function(d, i) {
 
+            let args = {}
+            args.d = d;
+            self._raiseEvent(EventTypes.onMouseClickLabel, self, args);
+        }
+    }
+    OnMouseOver(self) {
+        return function(d, i) {
+            let args = {}
+            args.d = d;
+            self._raiseEvent(EventTypes.onMouseOverLabel, self, args);
+        }
+    }
+    OnMouseOut(self) {
+        return function(d, i) {
+            let args = {}
+            args.d = d;
+            self._raiseEvent(EventTypes.onMouseOutLabel , self, args);
+        }
+    }
 }
