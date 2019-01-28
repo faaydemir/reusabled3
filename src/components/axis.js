@@ -1,27 +1,39 @@
-class xAxis extends d3Base {
+const AxisTypes = Object.freeze({
+    left: "axisLeft",
+    right: "axisRight",
+    top: "axisTop",
+    bottom: "axisBottom"
+});
+
+class Axis extends d3Base {
     constructor(container, data, config) {
         super(container, data, config);
         this._defaultConfig = {
             tickCount: 10,
             width: "100%",
-            height: 50,
+            height: "100%",
             maxDataCount: null,
-            scaleX: null,
             x: d => d.x,
-            domainX: null,
+            y: d => d.y,
             format: d => d,
             textColor: null,
             strokeColor: null,
-            tickSizeOuter: 0,
-            tickPadding: 0,
-            tickSizeInner: 0,
-            tickSize: 0,
+            tickSizeOuter: 1000,
+            tickPadding: 5,
+            tickSizeInner: 10,
+            tickSize: 5,
+            axisType: AxisTypes.left,
+
         };
     }
     _draw() {
+        if (this.config.taxisType === AxisTypes.left || this.config.taxisType === AxisTypes.right)
+            this.scale = this.scaleY;
+        else
+            this.scale = this.scaleX;
 
-        this.xAxis = d3.axisBottom()
-            .scale(this.scaleX)
+        this.axis = d3[this.config.axisType]()
+            .scale(this.scale)
             .ticks(this.config.tickCount)
             .tickFormat(this.config.format)
             .tickSizeOuter(this.config.tickSizeOuter)
@@ -34,7 +46,7 @@ class xAxis extends d3Base {
             .attr("width", this.config.width)
             .attr("height", this.config.height)
             .attr("class", "x axis axis-text")
-            .call(this.xAxis);
+            .call(this.axis);
         if (this.config.textColor)
             this.xAxisContainer.selectAll("text").attr("fill", this.config.textColor);
 
@@ -44,10 +56,19 @@ class xAxis extends d3Base {
         }
     }
     Zoom(min, max) {
-        super.ZoomX(min, max)
+        if (this.config.taxisType === AxisTypes.left || this.config.taxisType === AxisTypes.right)
+            super.ZoomY(min, max);
+        else
+            super.ZoomX(min, max);
+
     }
     _updateDraw() {
-        this.xAxis.scale(this.scaleX);
-        this.xAxisContainer.call(this.xAxis);
+        if (this.config.taxisType === AxisTypes.left || this.config.taxisType === AxisTypes.right)
+            this.scale = this.scaleY;
+        else
+            this.scale = this.scaleX;
+
+        this.axis.scale(this.scale);
+        this.xAxisContainer.call(this.axis);
     }
 }

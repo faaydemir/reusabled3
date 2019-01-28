@@ -1,7 +1,7 @@
 class Circle extends d3Base {
     constructor(container, data, config) {
 
-        super();
+        super(container, data, config);
 
         this.circles = {};
 
@@ -22,10 +22,6 @@ class Circle extends d3Base {
             mouseOver: null,
             r: 3,
         };
-
-        this._init(container, data, config);
-        this._initScales();
-        this._draw();
     }
     _initScales() {
         super._initScales();

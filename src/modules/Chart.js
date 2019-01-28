@@ -3,7 +3,7 @@ class Chart extends ModuleBase {
         super(container, data, config);
 
         this._defaultConfig = {
-            components: ["bar", "circle", "line", "xAxis", "yAxis", "label", "tooltip"],
+            components: ["bar", "circle", "line", "xAxis", "yAxis", "label", "tooltip", "dataLabel"],
         }
         this._init(container, data, config);
     };

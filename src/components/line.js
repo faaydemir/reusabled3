@@ -2,14 +2,14 @@ class Line extends d3Base {
 
     constructor(container, data, config) {
 
-        super();
+        super(container, data, config);
 
         this.lines = {};
 
+
+
         this._defaultConfig = {
             colorMap: d3.scaleOrdinal(d3.schemeCategory10),
-            yAxisWidth: 40,
-            xAxisHeight: 40,
             strokeWidth: 1,
             opacity: 0.5,
             width: "100%",
@@ -23,10 +23,9 @@ class Line extends d3Base {
             y: d => d.y,
             mouseOut: null,
             mouseOver: null,
-            curve: d3.curveStep,
             hoverOpacity: 1,
             hoverStrokeWidth: 2,
-            curve: "curveBasis",
+            curve: 'curveBasis',
             onFocus: {
                 opacity: 1,
                 strokeWidth: 2,
@@ -38,10 +37,6 @@ class Line extends d3Base {
             onMouseOverLabel: (n, s, args) => this.__focus(args.d),
             onMouseOutLabel: (n, s, args) => this.__unfocus(args.d),
         }
-
-        this._init(container, data, config);
-        this._initScales();
-        this._draw();
     }
     __focus(key) {
         this.lines[key]

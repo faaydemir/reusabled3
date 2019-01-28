@@ -54,9 +54,19 @@ let circle = new Circle("#circle", data, config);
 
 let lineChart = new Chart("#linechart", data, lineChartConfig);
 
+label.Draw();
+line.Draw();
+XAxis.Draw();
+YAxis.Draw();
+bar.Draw();
+circle.Draw();
+
+//lineChart.Draw();
+
 AddData(line, 100, 1, 10000);
 AddData(bar, 100, 1, 10000);
 AddData(YAxis, 100, 1, 10000);
 AddData(XAxis, 100, 1, 10000);
 AddData(circle, 100, 1, 10000);
-AddData(lineChart, 100, 1, 10000);
+
+//AddData(lineChart, 100, 1, 10000);

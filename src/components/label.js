@@ -1,6 +1,6 @@
 class Label extends d3Base {
     constructor(container, data, config) {
-        super();
+        super(container, data, config);
         this._defaultConfig = {
             fontsize: 12,
             colorMap: d3.scaleOrdinal(d3.schemeCategory10),
@@ -16,14 +16,14 @@ class Label extends d3Base {
         }
         this.AppendData = null;
         this.UpdateData = null;
-        this._init(container, data, config);
-        this.data = Object.keys(data);
-        this._initScales();
-        this._draw();
     }
 
     __calculateTotalWidth() {
         return this.data.length * (this.config.labelHeight + 2 + this.config.textWidth);
+    }
+    _init() {
+        super._init();
+        this.data = Object.keys(this.data);
     }
     _initScales() {
         let totalWidth = this.__calculateTotalWidth();
@@ -32,13 +32,15 @@ class Label extends d3Base {
             .domain([0, this.data.length]);
     }
     _draw() {
+
         this.labelContainer = this.container.append("g")
             .attr("width", this.config.width)
             .attr("height", this.config.height);
 
         var chartLabels = this.labelContainer.selectAll(".label")
             .data(this.data)
-            .enter().append("g")
+            .enter()
+            .append("g")
             .attr("class", "label")
             .on("mouseover",
                 this.OnMouseOver(this)
@@ -56,14 +58,15 @@ class Label extends d3Base {
             .attr("x", (d, i) => this.scale(i))
             .attr("y", 0)
             .attr("fill", d => this.config.colorMap(d))
-            .attr("opacity", this.opacity)
+            .attr("opacity", this.config.opacity)
             .attr("width", this.config.labelWidth)
             .attr("height", this.config.labelHeight);
 
         var texts = chartLabels.append("text")
             .attr("x", (d, i) => this.scale(i) + this.config.labelWidth + 2)
-            .attr("y", this.config.labelHeight * 0.8)
+            .attr("y", this.config.labelHeight *0.5)
             .style("fill", d => this.config.colorMap(d))
+            .attr('dominant-baseline', 'central')
             .style("font-size", this.config.labelHeight * 0.6)
             .text((d, i) => this.config.format(d));
     }
@@ -89,7 +92,7 @@ class Label extends d3Base {
         return function(d, i) {
             let args = {}
             args.d = d;
-            self._raiseEvent(EventTypes.onMouseOutLabel , self, args);
+            self._raiseEvent(EventTypes.onMouseOutLabel, self, args);
         }
     }
 }

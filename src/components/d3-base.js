@@ -1,6 +1,10 @@
-// not used
+/**
+ * @param  {} container dom or svg that will contain visualization module 
+ * @param  {} data data to visualize
+ * @param  {} config component configuration
+ */
 class d3Base {
-    constructor(container, config, data) {
+    constructor(container, data, config) {
 
         this._defaultConfig;
         this.scaleX;
@@ -11,6 +15,20 @@ class d3Base {
         this._updateDraw;
         this.eventBus;
         this.eventListeners = {};
+
+        if (data) {
+            this.data = clone(data);
+        }
+        if (config) {
+            this.configParam = config;
+        }
+        this.containerParam = container;
+    }
+
+    Draw() {
+        this._init();
+        this._initScales();
+        this._draw();
     }
     AppendDataAsync(data) {
         return new Promise((resolve, reject) => {
@@ -46,17 +64,17 @@ class d3Base {
     }
 
 
-    _init(container, data, config) {
-        this.config = MergeTo(this._defaultConfig, config);
-        if (container) {
-            this._initContainer(container);
+    _init() {
+        this.config = MergeTo(this._defaultConfig, this.configParam);
+        if (this.containerParam) {
+            this._initContainer(this.containerParam);
             let layoutParams = calculatedLayout(this.container, this.config.width, this.config.height);
             this.config.width = layoutParams.width;
             this.config.height = layoutParams.height;
+            this.width = layoutParams.width;
+            this.height = layoutParams.height;
         }
-        if (data) {
-            this.data = clone(data);
-        }
+
 
     }
     eventBus(eventBus) {
@@ -109,15 +127,28 @@ class d3Base {
         let dataArrays = Object.values(this.data);
         this.__flattenData = [].concat.apply([], dataArrays);
 
-        this.domainX = this.config.domainX || d3.extent(this.__flattenData, this.config.x);
-        this.domainY = this.config.domainY || d3.extent(this.__flattenData, this.config.y);
+        this._initYScale();
+        this._initXScale();
 
-        this.scaleX = this.config.scaleX || d3.scaleLinear()
-            .range([0, this.config.width])
-            .domain(this.domainX);
+    }
+    _initYScale() {
+        let domainY = d3.extent(this.__flattenData, this.config.y);
+
+        //TO DO fix zero bug 
+        this.domainY = [(this.config.minY || domainY[0]), (this.config.maxY || domainY[1])];
 
         this.scaleY = this.config.scaleY || d3.scaleLinear()
             .range([this.config.height, 0])
             .domain(this.domainY);
+    }
+    _initXScale() {
+        let domainX = d3.extent(this.__flattenData, this.config.x);
+
+        //TO DO fix zero bug 
+        this.domainX = [(this.config.minX || domainX[0]), (this.config.maxX || domainX[1])];
+
+        this.scaleX = this.config.scaleX || d3.scaleLinear()
+            .range([0, this.config.width])
+            .domain(this.domainX);
     }
 }
