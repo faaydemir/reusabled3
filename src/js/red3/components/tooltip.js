@@ -4,31 +4,31 @@ import * as d3 from 'd3';
 export default class Tooltip extends d3Base {
     constructor(contanier, data, config) {
 
-        super();
+        super(null, null, config);
         this._defaultConfig = {
             html: d => JSON.stringify(d) + "<br/>",
             class: "tooltip",
             id: "tooltip",
             contanier: "body"
 
-        }
-        this.eventListeners = {
-            onMouseOver: (n, s, args) => this.Show(args.d, args.x, args.y),
-            onMouseOut: (n, s, args) => this.Hide()
-        }
+        };
 
-        this._init(null, config);
-        this._draw();
+        this.eventListeners = {
+            onMouseOver: (n, s, args) => this.show(args.d, args.x, args.y),
+            onMouseOut: (n, s, args) => this.hide()
+        };
+
         this.AppendData = null;
         this.UpdateData = null;
     }
+
     _draw() {
         this.TooltipDiv = d3.select(this.config.contanier).append("div")
             .attr("class", this.config.class)
             .style("opacity", 0);
     }
 
-    Hide() {
+    hide() {
 
         this.TooltipDiv.transition()
             .duration(1000)
@@ -39,7 +39,7 @@ export default class Tooltip extends d3Base {
 
     }
 
-    Show(d, x, y) {
+    show(d, x, y) {
         let rect = this.TooltipDiv.node().getBoundingClientRect();
         let bodyRect = this.TooltipDiv.node().getBoundingClientRect();
 

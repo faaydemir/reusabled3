@@ -9,14 +9,13 @@ export default class Line extends d3Base {
 
         this.lines = {};
 
-
-
         this._defaultConfig = {
             colorMap: d3.scaleOrdinal(d3.schemeAccent),
             strokeWidth: 1,
             opacity: 1,
-            width: "100%",
-            height: "100%",
+            width: '100%',
+            height: '100%',
+            resize: true,
             maxDataCount: null,
             minX: null,
             maxX: null,
@@ -28,7 +27,7 @@ export default class Line extends d3Base {
             mouseOver: null,
             hoverOpacity: 1,
             hoverStrokeWidth: 2,
-            curve: "curveBasis",
+            curve: "curveMonotoneX",
             onFocus: {
                 opacity: 1,
                 strokeWidth: 2,
@@ -44,14 +43,12 @@ export default class Line extends d3Base {
     __focus(key) {
         this.lines[key]
             .attr("opacity", this.config.onFocus.opacity)
-            .attr("stroke-width", this.config.onFocus.strokeWidth)
-            .moveToFront();
+            .attr("stroke-width", this.config.onFocus.strokeWidth);
     }
     __unfocus(key) {
         this.lines[key]
             .attr("opacity", this.config.opacity)
-            .attr("stroke-width", this.config.onFocus.strokewidth)
-            .moveToFront();
+            .attr("stroke-width", this.config.onFocus.strokewidth);
     }
     _draw() {
         this.d = d3.line()
@@ -66,8 +63,8 @@ export default class Line extends d3Base {
 
         this._lineContainer = this.container
             .append("svg")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height);
+            .attr("width", this.width)
+            .attr("height", this.height);
 
         for (var key in this.data) {
             if (!this.data.hasOwnProperty(key)) continue;

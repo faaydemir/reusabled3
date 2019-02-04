@@ -5,6 +5,7 @@ export default class Area extends Line {
 
     constructor(container, data, config) {
         super(container, data, config);
+        this._defaultConfig.opacity = 0.2;
     }
 
     _draw() {
@@ -16,13 +17,13 @@ export default class Area extends Line {
             .y1(d => {
                 return this.scaleY(this.config.y(d));
             })
-            .y0(this.config.height)
+            .y0(this.height)
             .curve(d3[this.config.curve]);
 
         this._lineContainer = this.container
             .append("svg")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height);
+            .attr("width", this.width)
+            .attr("height", this.height);
 
         for (var key in this.data) {
             if (!this.data.hasOwnProperty(key)) continue;

@@ -20,6 +20,7 @@ export default class BrushX extends d3Base {
             min: null,
             max: null,
             steps: null,
+            resize: true,
             width: "100%",
             height: "100%",
             minRange: 0,
@@ -166,17 +167,17 @@ class ValueBrushHandle {
 
         g.selectAll(".resize").append("rect").attr("x", 0)
             .attr("y", 0)
-            .attr("width", this.config.width)
-            .attr("height", this.config.height)
+            .attr("width", this.width)
+            .attr("height", this.height)
             .attr("class", "border-rectangle");
 
         this.handleText = g.selectAll(".resize")
             .append("text")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height)
+            .attr("width", this.width)
+            .attr("height", this.height)
             .attr("class", "brush-value")
             .attr("text-anchor", "middle")
-            .attr("transform", (d, i) => { return "translate(" + (this.config.width / 2) + "," + (this.config.height / 2 + 5) + ")"; })
+            .attr("transform", (d, i) => { return "translate(" + (this.width / 2) + "," + (this.height / 2 + 5) + ")"; })
 
         .text((d, i) => { return this.config.format(d + "-" + i) });
     }
@@ -248,13 +249,13 @@ class Brush {
         //Set up the brush
         this.gBrush = g.append("g")
             .attr("class", "brush")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height)
+            .attr("width", this.width)
+            .attr("height", this.height)
             .call(this.brush);
 
         this.gBrush.selectAll(".extent")
-            .attr("height", this.config.height)
-            .attr("width", this.config.width);
+            .attr("height", this.height)
+            .attr("width", this.width);
         this.brush.extent([this.config.start, this.config.end])
 
         this.gBrush.call(this.brush.event);
@@ -270,7 +271,7 @@ class Brush {
 
         if (this.config.orientation == 'X' || this.config.orientation == 'x') {
             this.scale = d3.scale.linear()
-                .range([0, this.config.width])
+                .range([0, this.width])
                 .domain([this.config.min, this.config.max]);
             this.brush = d3.svg.brush()
                 .x(this.scale)
@@ -280,7 +281,7 @@ class Brush {
 
         } else if (this.config.orientation == 'Y' || this.config.orientation == 'y') {
             this.scale = d3.scale.linear()
-                .range([this.config.height, 0])
+                .range([this.height, 0])
                 .domain([this.config.min, this.config.max]);
             this.brush = d3.svg.brush()
                 .y(this.scale)

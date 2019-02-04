@@ -13,6 +13,7 @@ export class DataLabel extends d3Base {
             opacity: 1,
             width: "100%",
             height: "100%",
+            resize: true,
             minX: null,
             maxX: null,
             minY: null,
@@ -22,15 +23,15 @@ export class DataLabel extends d3Base {
             y: d => d.y,
             mouseOut: null,
             mouseOver: null,
-            text: d => d.x,
-            fontsize: 10,
+            text: d => 'value' + Math.floor(d.y),
+            fontsize: 12,
         }
     }
     _draw() {
         this._labelContainer = this.container
             .append("g")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height);
+            .attr("width", this.width)
+            .attr("height", this.height);
 
 
 
@@ -50,7 +51,7 @@ export class DataLabel extends d3Base {
                 .attr('dominant-baseline', 'central')
                 .attr("class", this.config.class)
                 .attr("x", (d, i) => this.scaleX(this.config.x(d, i)))
-                .attr("y", (d, i) => this.scaleY(this.config.y(d, i)))
+                .attr("y", (d, i) => this.scaleY(this.config.y(d, i)) - this.config.fontsize)
                 .text(this.config.text);
         }
 
@@ -75,13 +76,13 @@ export class DataLabel extends d3Base {
                 .attr('dominant-baseline', 'central')
                 .attr("class", this.config.class)
                 .attr("x", (d, i) => this.scaleX(this.config.x(d, i)))
-                .attr("y", (d, i) => this.scaleY(this.config.y(d, i)))
+                .attr("y", (d, i) => this.scaleY(this.config.y(d, i)) - this.config.fontsize)
                 .text(this.config.text);
 
             // update
             selection
                 .attr("x", (d, i) => this.scaleX(this.config.x(d, i)))
-                .attr("y", (d, i) => this.scaleY(this.config.y(d, i)));
+                .attr("y", (d, i) => this.scaleY(this.config.y(d, i)) - this.config.fontsize);
 
             //remove
             selection.exit().remove();

@@ -6,19 +6,20 @@ export default class xAxis extends d3Base {
         super(container, data, config);
         this._defaultConfig = {
             tickCount: 10,
-            width: "100%",
-            height: 50,
+            width: '100%',
+            height: '100%',
             maxDataCount: null,
             scaleX: null,
+            resize: true,
             x: d => d.x,
             domainX: null,
             format: d => d,
             textColor: null,
             strokeColor: null,
             tickSizeOuter: 0,
-            tickPadding: 0,
+            tickPadding: 5,
             tickSizeInner: 0,
-            tickSize: -100,
+            tickSize: 5,
         };
     }
     _draw() {
@@ -27,15 +28,14 @@ export default class xAxis extends d3Base {
             .scale(this.scaleX)
             .ticks(this.config.tickCount)
             .tickFormat(this.config.format)
-            .tickSizeOuter(this.config.tickSizeOuter)
-            .tickPadding(this.config.tickPadding)
-            .tickSizeInner(this.config.tickSizeInner)
-            .tickSize(this.config.tickSize)
+            .tickSizeOuter(this.config.tickSize)
+            .tickSizeInner(this.config.tickSize)
+            .tickPadding(this.config.tickPadding);
 
         this.xAxisContainer = this.container
             .append("g")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height)
+            .attr("width", this.width)
+            .attr("height", this.height)
             .attr("class", "x axis axis-text")
             .call(this.xAxis);
         if (this.config.textColor)

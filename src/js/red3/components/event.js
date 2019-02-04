@@ -28,8 +28,8 @@ export class Event extends d3Base {
     _draw() {
         this._evenContainer = this.container
             .append("g")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height);
+            .attr("width", this.width)
+            .attr("height", this.height);
 
 
 

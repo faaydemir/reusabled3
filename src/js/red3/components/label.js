@@ -9,9 +9,9 @@ export default class Label extends d3Base {
             fontsize: 12,
             colorMap: d3.scaleOrdinal(d3.schemeAccent),
             flow: "Y",
-            width: "100%",
             opacity: 1,
-            height: "100%",
+            width: '100%',
+            height: '100%',
             format: d => d,
             labelWidth: 15,
             labelHeight: 15,
@@ -29,13 +29,13 @@ export default class Label extends d3Base {
     _initScales() {
         let totalWidth = this.__calculateTotalWidth();
         this.scale = this.config.scale || d3.scaleLinear()
-            .range([this.config.width - totalWidth, this.config.width])
+            .range([this.width - totalWidth, this.width])
             .domain([0, this.data.length]);
     }
     _draw() {
         this.labelContainer = this.container.append("g")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height);
+            .attr("width", this.width)
+            .attr("height", this.height);
 
         var chartLabels = this.labelContainer.selectAll(".label")
             .data(this.data)

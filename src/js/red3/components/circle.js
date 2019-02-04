@@ -11,8 +11,9 @@ export default class Circle extends d3Base {
         this._defaultConfig = {
             colorMap: d3.scaleOrdinal(d3.schemeAccent),
             opacity: 1,
-            width: "100%",
-            height: "100%",
+            width: '100%',
+            height: '100%',
+            resize: true,
             maxDataCount: null,
             minX: null,
             maxX: null,
@@ -41,8 +42,8 @@ export default class Circle extends d3Base {
     _draw() {
         this._circleContainer = this.container
             .append("g")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height);
+            .attr("width", this.width)
+            .attr("height", this.height);
 
 
 
@@ -61,7 +62,6 @@ export default class Circle extends d3Base {
                 .attr("cx", d => this.scaleX(this.config.x(d)))
                 .attr("cy", d => this.scaleY(this.config.y(d)))
                 .attr("r", d => this.scaleZ(this.config.y(d)));
-
         }
 
     }
@@ -69,14 +69,14 @@ export default class Circle extends d3Base {
         this.circles[key]
             .attr("opacity", this.config.hover.opacity)
             .attr("fill", this.config.hover.colorMap(key))
-            .moveToFront();
+            ;
     }
 
     __unfocus(key) {
         this.circles[key]
             .attr("opacity", this.config.opacity)
             .attr("fill", this.config.colorMap(key))
-            .moveToFront();
+            ;
     }
 
     _updateDraw() {
@@ -103,6 +103,7 @@ export default class Circle extends d3Base {
                 .attr("cy", d => this.scaleY(this.config.y(d)))
                 .attr("r", d => this.scaleZ(this.config.y(d)));
 
+            // remove
             selection.exit().remove();
         }
     }

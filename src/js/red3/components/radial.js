@@ -20,7 +20,7 @@ class Radial extends d3Base {
     }
     _init() {
         super._init();
-        let smaller = (this.config.width < this.config.height) ? this.config.width : this.config.height
+        let smaller = (this.width < this.height) ? this.width : this.height;
         this.outerRadius = smaller * 0.5 * this.config.outerRadiusFactor;
     }
     _draw() {
@@ -51,12 +51,12 @@ class Radial extends d3Base {
         this.container.append("path")
             .attr("fill", color)
             .attr('opacity', 0.2)
-            .attr('transform', `translate(${this.config.width/2},${this.config.height/2})`)
+            .attr('transform', `translate(${this.width/2},${this.height/2})`)
             .attr('d', this.shadowArc());
 
         this.mainArcPath = this.container.append("path")
             .attr("fill", color)
-            .attr('transform', `translate(${this.config.width/2},${this.config.height/2})`)
+            .attr('transform', `translate(${this.width/2},${this.height/2})`)
             .attr('d', this.mainArc());
 
         this.percentLabel = this.container.append("text")
@@ -64,7 +64,7 @@ class Radial extends d3Base {
             .attr('dominant-baseline', 'central')
             .attr('font-size', this.config.fontsize)
             .attr('fill', this.config.fontColor || color)
-            .attr('transform', `translate(${this.config.width/2},${this.config.height/2})`)
+            .attr('transform', `translate(${this.width/2},${this.height/2})`)
             .text(valueText);
     }
     _updateDraw() {

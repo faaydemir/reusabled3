@@ -149,8 +149,9 @@ export default function AutoGrid(container) {
     function Percent(value) {
         return parseFloat(value)
     }
+
     this.AddItem = AddItem;
     this.Update = Update;
     this.GetLayout = GetLayout;
-    this.Resize = Resize
+    this.Resize = Resize;
 }

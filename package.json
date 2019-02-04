@@ -23,6 +23,7 @@
         "webpack-dev-server": "^3.1.14"
     },
     "dependencies": {
-        "d3": "^5.7.0"
+        "d3": "^5.7.0",
+        "resize-sensor": "0.0.6"
     }
 }

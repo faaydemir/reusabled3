@@ -4,12 +4,14 @@ import * as d3 from 'd3';
 export default class yAxis extends d3Base {
     constructor(container, data, config) {
         super(container, data, config);
+
         this._defaultConfig = {
             tickCount: 6,
             width: 50,
             height: "100%",
             maxDataCount: null,
             minY: null,
+            resize: true,
             maxY: null,
             scaleX: null,
             y: d => d.y,
@@ -18,36 +20,29 @@ export default class yAxis extends d3Base {
             format: d => d,
             textColor: null,
             strokeColor: null,
-            tickSizeOuter: 100,
-            tickPadding: 2,
+            tickSizeOuter: 0,
+            tickPadding: 5,
             tickSizeInner: 100,
         };
-
-
     }
+
     _draw() {
 
-        this.yAxis = d3.axisRight()
+        this.yAxis = d3.axisLeft()
             .scale(this.scaleY)
             .ticks(this.config.tickCount)
             .tickFormat(this.config.format)
             .tickPadding(this.config.tickPadding)
-            .tickSizeInner(this.config.width)
-            .tickSizeOuter(0)
-
-        this.customAxis = (g) => {
-            g.call(this.yAxis);
-            g.select(".domain").remove();
-            g.selectAll(".tick text").attr("x", 4).attr("dy", -4);
-        }
+            .tickSizeInner(-this.width)
+            .tickSizeOuter(this.tickSizeOuter);
 
         this.yAxisContainer = this.container
             .append("g")
-            .attr("width", this.config.width)
-            .attr("height", this.config.height)
-            //.attr("transform", "translate(" + this.config.width + "," + 0 + ")")
+            .attr("width", this.width)
+            .attr("height", this.height)
+            //.attr("transform", "translate(" + this.width + "," + 0 + ")")
             .attr("class", "y axis axis-text")
-            .call(this.customAxis);
+            .call(this.yAxis);
 
         if (this.config.textColor)
             this.yAxisContainer.selectAll("text").attr("fill", this.config.textColor);
@@ -62,6 +57,6 @@ export default class yAxis extends d3Base {
     }
     _updateDraw() {
         this.yAxis.scale(this.scaleY);
-        this.yAxisContainer.call(this.customAxis);
+        this.yAxisContainer.call(this.yAxis);
     }
 }
