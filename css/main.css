@@ -35,6 +35,7 @@ h3 {
 }
 
 .chart {
+    height: 300px;
     width: 100%;
     margin: 5px;
 }
