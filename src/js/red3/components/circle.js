@@ -68,15 +68,13 @@ export default class Circle extends d3Base {
     __focus(key) {
         this.circles[key]
             .attr("opacity", this.config.hover.opacity)
-            .attr("fill", this.config.hover.colorMap(key))
-            ;
+            .attr("fill", this.config.hover.colorMap(key));
     }
 
     __unfocus(key) {
         this.circles[key]
             .attr("opacity", this.config.opacity)
-            .attr("fill", this.config.colorMap(key))
-            ;
+            .attr("fill", this.config.colorMap(key));
     }
 
     _updateDraw() {

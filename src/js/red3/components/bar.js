@@ -67,7 +67,9 @@ export default class Bar extends d3Base {
     }
 
     _initBarRelatedFunction() {
+        // if start point (yStart) is defined means bar represent range 
         if (this.config.yStart !== null) {
+            //BUG there is a bug
             this._barHeight = (d, i) => this.scaleY(this.config.y(d)) - this.scaleY(this.config.yStart(d));
             this._barY = (d, i) => this.height - this.scaleY(this.config.y(d))
         } else {
@@ -114,7 +116,7 @@ export default class Bar extends d3Base {
                 .enter()
                 .append("rect")
                 .attr("fill", color)
-                .attr('opacity', this.config.opacity)
+                .attr("opacity", this.config.opacity)
                 .attr("class", "bar")
                 .attr("x", d => this.scaleX(this.config.x(d)) + barOfset)
                 .attr("width", barLayout.width)
@@ -139,17 +141,8 @@ export default class Bar extends d3Base {
             let selection = this.bars[key].selectAll(".bar")
                 .data(this.data[key]);
 
-            // add 
-            selection
-                .enter()
-                .append("rect")
-                .attr("fill", color)
-                .attr('opacity', this.config.opacity)
-                .attr("class", "bar")
-                .attr("x", d => this.scaleX(this.config.x(d)) + barOfset)
-                .attr("width", barLayout.width)
-                .attr("y", this._barY)
-                .attr("height", this._barHeight);
+            //delete
+            selection.exit().remove();
 
             // update
             selection
@@ -158,14 +151,26 @@ export default class Bar extends d3Base {
                 .attr("y", this._barY)
                 .attr("height", this._barHeight);
 
-            selection.exit().remove();
+            // add 
+            selection
+                .enter()
+                .append("rect")
+                .attr("fill", color)
+                .attr("opacity", this.config.opacity)
+                .attr("class", "bar")
+                .attr("x", d => this.scaleX.range()[0] + barOfset)
+                .attr("width", barLayout.width)
+                .attr("y", this._barY)
+                .attr("height", this._barHeight)
+                .attr("x", d => this.scaleX(this.config.x(d)) + barOfset);
+
 
             barIndex += 1;
         }
     }
     _calculateBarLayout() {
         let maxDataCount = 0;
-        let dataSetCount = Object.keys(this.data).length
+        let dataSetCount = Object.keys(this.data).length;
         let barMargin = 3; // margin between bars
         for (var key in this.data) {
             if (!this.data.hasOwnProperty(key)) continue;

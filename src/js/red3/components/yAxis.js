@@ -15,11 +15,12 @@ export default class yAxis extends d3Base {
             maxY: null,
             scaleX: null,
             y: d => d.y,
+            opacity: 0.5,
             yStart: null,
             domainX: null,
             format: d => d,
             textColor: null,
-            strokeColor: null,
+            strokeColor: "#A06F5E",
             tickSizeOuter: 0,
             tickPadding: 5,
             tickSizeInner: 100,
@@ -44,13 +45,15 @@ export default class yAxis extends d3Base {
             .attr("class", "y axis axis-text")
             .call(this.yAxis);
 
-        if (this.config.textColor)
-            this.yAxisContainer.selectAll("text").attr("fill", this.config.textColor);
+        this.yAxisContainer.selectAll("text").attr("fill", this.config.textColor);
 
-        if (this.config.strokeColor) {
-            this.yAxisContainer.selectAll("line").attr("stroke", this.config.strokeColor);
-            this.yAxisContainer.selectAll("path").attr("stroke", this.config.strokeColor);
-        }
+        this.yAxisContainer.selectAll("line")
+            .attr("stroke", this.config.strokeColor)
+            .attr("opacity", this.config.opacity);
+        this.yAxisContainer.selectAll("path")
+            .attr("stroke", this.config.strokeColor)
+            .attr("opacity", this.config.opacity);
+
     }
     Zoom(min, max) {
         super.ZoomY(min, max)
@@ -58,5 +61,11 @@ export default class yAxis extends d3Base {
     _updateDraw() {
         this.yAxis.scale(this.scaleY);
         this.yAxisContainer.call(this.yAxis);
+        this.yAxisContainer.selectAll("line")
+            .attr("stroke", this.config.strokeColor)
+            .attr("opacity", this.config.opacity);
+        this.yAxisContainer.selectAll("path")
+            .attr("stroke", this.config.strokeColor)
+            .attr("opacity", this.config.opacity);
     }
 }
