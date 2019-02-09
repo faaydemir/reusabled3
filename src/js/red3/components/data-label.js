@@ -1,7 +1,7 @@
-import d3Base from './d3-base';
-import * as d3 from 'd3';
+import d3Base from "./d3-base";
+import * as d3 from "d3";
 
-export class DataLabel extends d3Base {
+export default class DataLabel extends d3Base {
     constructor(container, data, config) {
 
         super(container, data, config);
@@ -23,23 +23,22 @@ export class DataLabel extends d3Base {
             y: d => d.y,
             mouseOut: null,
             mouseOver: null,
-            text: d => 'value' + Math.floor(d.y),
+            text: d => "value" + Math.floor(d.y),
             fontsize: 12,
-        }
+        };
     }
+
     _draw() {
         this._labelContainer = this.container
             .append("g")
             .attr("width", this.width)
             .attr("height", this.height);
 
-
-
         for (var key in this.data) {
             if (!this.data.hasOwnProperty(key)) continue;
 
             let color = this.config.colorMap(key);
-            this.dataLabels[key] = this._labelContainer.append("g")
+            this.dataLabels[key] = this._labelContainer.append("g");
 
             this.dataLabels[key].selectAll("text")
                 .data(this.data[key])
@@ -47,18 +46,16 @@ export class DataLabel extends d3Base {
                 .append("text")
                 .style("fill", color)
                 .style("font-size", this.config.fontsize)
-                .attr('text-anchor', 'middle')
-                .attr('dominant-baseline', 'central')
+                .attr("text-anchor", "middle")
+                .attr("dominant-baseline", "central")
                 .attr("class", this.config.class)
                 .attr("x", (d, i) => this.scaleX(this.config.x(d, i)))
                 .attr("y", (d, i) => this.scaleY(this.config.y(d, i)) - this.config.fontsize)
                 .text(this.config.text);
         }
-
     }
 
     _updateDraw() {
-
 
         for (var key in this.data) {
             if (!this.data.hasOwnProperty(key)) continue;
@@ -72,8 +69,8 @@ export class DataLabel extends d3Base {
             selection.enter().append("text")
                 .style("fill", color)
                 .style("font-size", this.config.fontsize)
-                .attr('text-anchor', 'middle')
-                .attr('dominant-baseline', 'central')
+                .attr("text-anchor", "middle")
+                .attr("dominant-baseline", "central")
                 .attr("class", this.config.class)
                 .attr("x", (d, i) => this.scaleX(this.config.x(d, i)))
                 .attr("y", (d, i) => this.scaleY(this.config.y(d, i)) - this.config.fontsize)

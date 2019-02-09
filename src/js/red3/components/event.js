@@ -1,7 +1,7 @@
-import d3Base from './d3-base';
-import * as d3 from 'd3';
+import d3Base from "./d3-base";
+import * as d3 from "d3";
 
-export class Event extends d3Base {
+export default class Event extends d3Base {
     constructor(container, data, config) {
 
         super(container, data, config);
@@ -17,13 +17,15 @@ export class Event extends d3Base {
             maxX: null,
             minY: null,
             maxY: null,
+            iconWidth: 30,
+            iconHeight: 30,
             class: "event-icon",
             x: d => d.x,
             y: d => d.y,
             mouseOut: null,
             mouseOver: null,
             iconFunction: d => d.icon
-        }
+        };
     }
     _draw() {
         this._evenContainer = this.container
@@ -37,45 +39,52 @@ export class Event extends d3Base {
             if (!this.data.hasOwnProperty(key)) continue;
 
             let color = this.config.colorMap(key);
-            this.events[key] = this._evenContainer.append("g")
+            this.events[key] = this._evenContainer.append("g");
 
             this.events[key].selectAll("image")
                 .data(this.data[key])
                 .enter()
                 .append("image")
+                .attr("width", this.config.iconWidth)
+                .attr("height", this.config.iconHeight)
                 .attr("fill", color)
                 .attr("class", this.config.class)
                 .attr("xlink:href", this.config.iconFunction)
-                .attr("x", d => this.scaleX(this.config.x(d)))
-                .attr("y", d => this.scaleY(this.config.y(d)));
+                .attr("x", d => this.scaleX(this.config.x(d)) - this.config.iconWidth / 2)
+                .attr("y", d => this.scaleY(this.config.y(d)) + this.config.iconWidth / 2);
         }
 
     }
 
     _updateDraw() {
 
-        // for (var key in this.data) {
-        //     if (!this.data.hasOwnProperty(key)) continue;
+        for (var key in this.data) {
+            if (!this.data.hasOwnProperty(key)) continue;
 
-        //     let color = this.config.colorMap(key);
+            let color = this.config.colorMap(key);
 
-        //     let selection = this.circles[key].selectAll(".circle")
-        //         .data(this.data[key]);
+            let selection = this.events[key].selectAll("image")
+                .data(this.data[key]);
 
-        //     // add 
-        //     selection.enter().append("circle")
-        //         .attr("fill", color)
-        //         .attr("class", "circle")
-        //         .attr("cx", d => this.scaleX(this.config.x(d)))
-        //         .attr("cy", d => this.scaleY(this.config.y(d)))
-        //         .attr("r", d => this.scaleZ(this.config.y(d)));
 
-        //     // update
-        //     selection
-        //         .attr("cx", d => this.scaleX(this.config.x(d)))
-        //         .attr("cy", d => this.scaleY(this.config.y(d)))
-        //         .attr("r", d => this.scaleZ(this.config.y(d)));
+            //remove
+            selection.exit().remove();
 
-        //     selection.exit().remove();
+            // update
+            selection
+                .attr("xlink:href", this.config.iconFunction)
+                .attr("x", d => this.scaleX(this.config.x(d)) - this.config.iconWidth / 2)
+                .attr("y", d => this.scaleY(this.config.y(d)) + this.config.iconWidth / 2);
+
+            // add 
+            selection.enter().append("image")
+                .attr("width", this.config.iconWidth)
+                .attr("height", this.config.iconHeight)
+                .attr("fill", color)
+                .attr("class", this.config.class)
+                .attr("xlink:href", this.config.iconFunction)
+                .attr("x", d => this.scaleX(this.config.x(d)) - this.config.iconWidth / 2)
+                .attr("y", d => this.scaleY(this.config.y(d)) + this.config.iconWidth / 2);
+        }
     }
 }

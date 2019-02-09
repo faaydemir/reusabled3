@@ -1,5 +1,5 @@
-import d3Base from './d3-base';
-import * as d3 from 'd3';
+import d3Base from "./d3-base";
+import * as d3 from "d3";
 
 export default class yAxis extends d3Base {
     constructor(container, data, config) {
@@ -15,11 +15,11 @@ export default class yAxis extends d3Base {
             maxY: null,
             scaleX: null,
             y: d => d.y,
-            opacity: 0.5,
+            opacity: 0.3,
             yStart: null,
             domainX: null,
             format: d => d,
-            textColor: null,
+            textColor: "#101108",
             strokeColor: "#A06F5E",
             tickSizeOuter: 0,
             tickPadding: 5,
@@ -35,7 +35,7 @@ export default class yAxis extends d3Base {
             .tickFormat(this.config.format)
             .tickPadding(this.config.tickPadding)
             .tickSizeInner(-this.width)
-            .tickSizeOuter(this.tickSizeOuter);
+            .tickSizeOuter(-this.width);
 
         this.yAxisContainer = this.container
             .append("g")
@@ -56,11 +56,12 @@ export default class yAxis extends d3Base {
 
     }
     Zoom(min, max) {
-        super.ZoomY(min, max)
+        super.ZoomY(min, max);
     }
     _updateDraw() {
         this.yAxis.scale(this.scaleY);
         this.yAxisContainer.call(this.yAxis);
+        this.yAxisContainer.selectAll("text").attr("fill", this.config.textColor);
         this.yAxisContainer.selectAll("line")
             .attr("stroke", this.config.strokeColor)
             .attr("opacity", this.config.opacity);

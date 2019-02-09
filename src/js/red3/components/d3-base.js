@@ -49,10 +49,12 @@ export default class d3Base {
 
     UpdateData(data) {
         this._setData(data);
+        Update();
+    }
+    Update() {
         this._initScales();
         this._updateDraw();
     }
-
     ZoomX(min, max) {
         this.scaleX.domain([min, max]);
         this._updateDraw();
@@ -185,7 +187,7 @@ export default class d3Base {
         this.domainX = [(this.config.minX || domainX[0]), (this.config.maxX || domainX[1])];
 
         this.scaleX = this.config.scaleX || d3.scaleLinear()
-            .range([0, this.width])
+            .range([0 + 40, this.width - 40])
             .domain(this.domainX);
     }
 }

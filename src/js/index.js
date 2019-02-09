@@ -8,15 +8,13 @@ import xAxis from './red3/components/xAxis';
 import Area from './red3/components/area';
 import Chart from './red3/charts/chart';
 
-import dataLabel, { DataLabel } from './red3/components/data-label';
+import DataLabel from './red3/components/data-label';
 
 import * as utils from './red3/utils';
 
 async function draw() {
 
     async function AddData(chart, sleepTime, dataCount, addCount) {
-
-
 
         for (let index = 1; index < addCount; index++) {
             await utils.sleep(sleepTime);
@@ -46,7 +44,7 @@ async function draw() {
     }
 
     let config = {
-        maxDataCount: 20,
+        maxDataCount: 50,
         width: '100%',
         height: '100%',
     }

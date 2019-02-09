@@ -1,16 +1,18 @@
-import Label from './../components/label';
-import Line from './../components/line';
-import Bar from './../components/bar';
-import Circle from './../components/circle';
-import yAxis from './../components/yAxis';
-import xAxis from './../components/xAxis';
-import Area from './../components/area';
-import Tooltip from './../components/tooltip';
-import dataLabel, { DataLabel } from './../components/data-label';
-import * as utils from './../utils';
-import AutoGrid from './../grid';
-import * as d3 from 'd3';
-import EventBus from './../event-bus';
+import Label from "./../components/label";
+import Line from "./../components/line";
+import Bar from "./../components/bar";
+import Circle from "./../components/circle";
+import yAxis from "./../components/yAxis";
+import xAxis from "./../components/xAxis";
+import Area from "./../components/area";
+import Tooltip from "./../components/tooltip";
+import BrushX from "./../components/brush";
+import Event from "./../components/event";
+import DataLabel from "./../components/data-label";
+import * as utils from "./../utils";
+import AutoGrid from "./../grid";
+import * as d3 from "d3";
+import EventBus from "./../event-bus";
 
 export default class ChartBase {
     constructor(container, data, config) {
@@ -19,7 +21,7 @@ export default class ChartBase {
         this.components = {};
 
         this.baseConfig = {
-            components: ["bar", "circle", "line", "xAxis", "yAxis", "label", "brush", "tooltip", "dataLabel"],
+            components: ["bar", "circle", "line", "xAxis", "yAxis", "label", "brush", "tooltip", "dataLabel", "event"],
             width: "100%",
             height: "100%",
 
@@ -67,15 +69,15 @@ export default class ChartBase {
                     column: 1,
                 }
             },
-            // brush: {
-            //     type: BrushX,
-            //     config: {
-            //         width: "100%",
-            //         height: "100%",
-            //         row: 1,
-            //         column: 1,
-            //     }
-            // },
+            brush: {
+                type: BrushX,
+                config: {
+                    width: "100%",
+                    height: "100%",
+                    row: 1,
+                    column: 1,
+                }
+            },
             bar: {
                 type: Bar,
                 config: {
@@ -112,30 +114,41 @@ export default class ChartBase {
                     column: 1,
                 }
             },
-        }
+            event: {
+                type: Event,
+                config: {
+                    width: "100%",
+                    height: "100%",
+                    row: 1,
+                    column: 1,
+                }
+            },
+        };
 
         if (data) {
             this.data = utils.clone(data);
         }
+
         if (config) {
             this.configParam = config;
         }
+
         this.containerParam = container;
+
         this.margin = {
             x: 40,
             y: 40
-        }
-
+        };
     }
 
-    init() {
+    Init() {
         this.initilized = true;
         this._init();
     }
 
     Draw() {
         if (this.initilized !== true)
-            this.init();
+            this.Init();
 
         this._drawComponents();
     }
@@ -160,7 +173,7 @@ export default class ChartBase {
         this.config.components.forEach(
             component => {
                 if ((this.componentConfig[component]) && (this.componentConfig[component].config)) {
-                    let cLayout = this.componentConfig[component].config
+                    let cLayout = this.componentConfig[component].config;
                     this.grid.AddItem(cLayout.column, cLayout.row, cLayout.width, cLayout.height);
                 }
             });
@@ -181,11 +194,9 @@ export default class ChartBase {
                         .attr("width", ly.width)
                         .attr("height", ly.height)
                         .attr("opacity", 0)
-                        .style("fill", colorMap(component))
+                        .style("fill", colorMap(component));
                 }
             });
-
-
     }
 
     _initComponents() {
@@ -198,7 +209,14 @@ export default class ChartBase {
 
                     let config = utils.mergeTo(this.componentConfig[component].config, utils.mergeTo(this.config, this.config[component]));
 
-                    let data = this.data;
+                    let data = [];
+                    if (config[component] && config[component].data) // if component data set
+                    {
+                        data = config[component].data;
+                    } else {
+                        data = this.data;
+                    }
+
 
                     this.components[component] = new this.componentConfig[component].type(container, data, config);
 
@@ -222,7 +240,28 @@ export default class ChartBase {
                     this.components[component].AppendData(data);
             });
     }
+    _setData(data) {
+        this.config.components.forEach(
+            component => {
+                if (this.components[component]._setData)
+                    this.components[component]._setData(data);
+            });
+    }
+    Update() {
+        this.config.components.forEach(
+            component => {
+                if (this.components[component].Update)
+                    this.components[component].Update();
+            });
+    }
+    UpdateData(data) {
 
+        this.config.components.forEach(
+            component => {
+                if (this.components[component].UpdateData)
+                    this.components[component].UpdateData(data);
+            });
+    }
     _initContainer(container) {
         if (typeof container === "string") { // if #divId , or  .divclass 
 
@@ -240,8 +279,8 @@ export default class ChartBase {
                 .attr("height", height)
                 .attr("transform", `translate(${ this.margin.x },${ this.margin.y })`);
             this.container.append("rect").attr("width", width)
-                .attr("height", height).attr("opacity", 0)
-                //this.container = containerSvg
+                .attr("height", height).attr("opacity", 0);
+            //this.container = containerSvg
 
         } else { // else  assume container is appended g or svg
             this.container = container;

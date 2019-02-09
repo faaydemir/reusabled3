@@ -1,6 +1,3 @@
-/**
- * 
- */
 export default class Sampler {
     constructor() {
 
@@ -45,7 +42,7 @@ export default class Sampler {
 
             let sampleArray = [];
 
-            let subArrayLength = Math.floor(realData.length / (sampleLength / sampleFunctionReturnLength))
+            let subArrayLength = Math.floor(realData.length / (sampleLength / sampleFunctionReturnLength));
 
             const slicedArrays = this._sliceArray(realData, subArrayLength);
 
