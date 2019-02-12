@@ -15,7 +15,7 @@ export default class xAxis extends d3Base {
             domainX: null,
             opacity: 0.5,
             format: d => d,
-            textColor: "#101108",
+            textColor: null,
             strokeColor: "#A06F5E",
             tickSizeOuter: 0,
             tickPadding: 5,
@@ -57,7 +57,7 @@ export default class xAxis extends d3Base {
         this.xAxis.scale(this.scaleX);
         this.xAxisContainer.call(this.xAxis);
 
-        this.xAxisContainer.selectAll("text").attr("fill", this.config.textColor);
+
         this.xAxisContainer.selectAll("text")
             .attr("fill", this.config.textColor);
         this.xAxisContainer.selectAll("line")
