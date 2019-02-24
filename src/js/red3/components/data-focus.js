@@ -10,21 +10,20 @@ export default class DataFocus extends d3Base {
         super(contanier, data, config);
 
         this._defaultConfig = {
-            html: d => JSON.stringify(d) + "<br/>",
-            class: "tooltip-default",
-            id: "tooltip",
-            container: "body",
-            time: 1000,
+            width: '100%',
+            height: '100%',
             onTooltipCreated: null,
+            x: d => d.x,
+            y: d => d.y,
+            r: 5,
+            color: "red",
         };
 
         this.eventListeners = {
             onMouseOver: (n, s, args) => this.show(args.d, args.x, args.y),
-            onMouseOut: (n, s, args) => this.hide()
+            // onMouseOut: (n, s, args) => this.hide()
         };
 
-        this.AppendData = null;
-        this.UpdateData = null;
     }
 
     _draw() {
@@ -36,79 +35,67 @@ export default class DataFocus extends d3Base {
 
         this.circle = this._focusContainer
             .append("circle")
-            .attr("fill", "red")
+            .attr("fill", this.config.color)
             .attr("class", "circle")
-            .attr("cx", d => 50)
-            .attr("cy", d => 50)
-            .attr("r", d => 10);
+            .attr("cx", -50)
+            .attr("cy", -50)
+            .attr("r", this.config.r);
 
-        // this.lineX = _focusContainer.append('line')
+        this.xLine = this._focusContainer
+            .append("line") // attach a line
+            .style("stroke", this.config.color)
+            .attr("x1", -100)
+            .attr("y1", 0)
+            .attr("x2", -100)
+            .attr("y2", this.height);
 
-        //this.scaleZ(this.config.y(d));
+        this.yLine = this._focusContainer
+            .append("line") // attach a line
+            .style("stroke", this.config.color)
+            .attr("x1", 0)
+            .attr("y1", -100)
+            .attr("x2", this.width)
+            .attr("y2", -100);
     }
 
     hide() {
+        this.circle
+            .attr("cx", -100)
+            .attr("cy", -100);
 
-        this.TooltipDiv.transition()
-            .delay(this.config.time)
-            .style("opacity", 0)
-            .style("top", "0px");
+        this.xLine
+            .attr("x1", -100)
+            .attr("x2", -100);
 
-    }
-    _setData() {
-
+        this.yLine
+            .attr("y1", -100)
+            .attr("y2", -100);
     }
     _updateDraw() {
+        if (this.focusedData) {
+            let x = this.scaleX(this.config.x(this.focusedData));
+            let y = this.scaleY(this.config.y(this.focusedData));
+            if (x < 0 || y < 0) {
+                this.hide();
+                this.focusedData = null;
+            } else {
+                this.circle
+                    .attr("cx", x)
+                    .attr("cy", y);
 
+                this.xLine
+                    .attr("x1", x)
+                    .attr("x2", x)
+
+                this.yLine
+                    .attr("y1", y)
+                    .attr("y2", y);
+            }
+        }
     }
-    show(d, x, y) {
 
-        this.circle = _focusContainer
-            .append("circle")
-            .attr("fill", "red")
-            .attr("class", "circle")
-            .attr("cx", d => this.scaleX(this.config.x(d)))
-            .attr("cy", d => this.scaleY(this.config.y(d)))
-
-
-        // for (var key in this.data) {
-        //     if (!this.data.hasOwnProperty(key)) continue;
-
-        //     let color = this.config.colorMap(key);
-        //     this.circles[key] = this._focusContainer.append("g");
-
-        //     this.circles[key].selectAll(".circle")
-        //         .data(this.data[key])
-        //         .enter()
-        //         .append("circle")
-        //         .attr("fill", color)
-        //         .attr("class", "circle")
-        //         .attr("cx", d => this.scaleX(this.config.x(d)))
-        //         .attr("cy", d => this.scaleY(this.config.y(d)))
-        //         .attr("r", d => this.scaleZ(this.config.y(d)));
-
-        //     this.TooltipDiv.transition();
-        //     this.TooltipDiv
-        //         .style("left", (x + "px"))
-        //         .style("top", (y + "px"))
-        //         .html(this.config.html(d))
-        //         .style("opacity", 1)
-        //         .style("position", "absolute")
-        //         .style("z-index", "100");
-
-        //     let rect = this.TooltipDiv.node().getBoundingClientRect();
-        //     let bodyRect = this.TooltipDiv.node().getBoundingClientRect();
-
-        //     if ((x > rect.width / 2) && (y > rect.height)) {
-        //         x = x - rect.width / 2;
-        //         y = y - rect.height;
-        //     }
-        //     if ((x + rect.width / 2) > bodyRect.width) {
-        //         x = x - rect.width / 2;
-        //     }
-        //     if (this.config.onTooltipCreated) {
-        //         this.config.onTooltipCreated(d);
-        //     }
-        // }
+    show(d, pageX, pageY) {
+        this.focusedData = d;
+        this._updateDraw();
     }
 }
