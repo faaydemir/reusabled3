@@ -9,10 +9,12 @@ import Tooltip from "./../components/tooltip";
 import BrushX from "./../components/brush";
 import Event from "./../components/event";
 import DataLabel from "./../components/data-label";
+import DataFocus from "../components/data-focus";
 import * as utils from "./../utils";
 import AutoGrid from "./../grid";
 import * as d3 from "d3";
 import EventBus from "./../event-bus";
+
 
 export default class ChartBase {
     constructor(container, data, config) {
@@ -21,7 +23,7 @@ export default class ChartBase {
         this.components = {};
 
         this.baseConfig = {
-            components: ["bar", "circle", "line", "xAxis", "yAxis", "label", "brush", "tooltip", "dataLabel", "event"],
+            components: ["bar", "circle", "line", "xAxis", "yAxis", "label", "brush", "tooltip", "dataLabel", "dataFocus", "event"],
             width: "100%",
             height: "100%",
 
@@ -116,6 +118,15 @@ export default class ChartBase {
             },
             event: {
                 type: Event,
+                config: {
+                    width: "100%",
+                    height: "100%",
+                    row: 1,
+                    column: 1,
+                }
+            },
+            dataFocus: {
+                type: DataFocus,
                 config: {
                     width: "100%",
                     height: "100%",

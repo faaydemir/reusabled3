@@ -5,7 +5,10 @@ export default class Chart extends ChartBase {
         super(container, data, config);
 
         this._defaultConfig = {
-            components: ["tooltip", "label", "line", "area", "bar", "circle", "dataLabel", "xAxis", "yAxis", /*"brush",*/ "event"],
+            components: ["tooltip", "label", "line", "area",
+                "bar", "circle", "dataLabel", "xAxis",
+                "yAxis", "dataFocus", "event" /*"brush",*/
+            ],
         };
 
     }
